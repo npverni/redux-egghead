@@ -1,9 +1,27 @@
-import React from 'react';
-import { render } from 'react-dom';
-import Hello from './component';
+import { createStore } from 'redux';
 
-main();
-
-function main() {
-  render(<Hello />, document.getElementById('app'));
+const counter = (state = 0, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return state + 1;
+    case 'DECREMENT':
+      return state - 1;
+    default:
+      return state;
+  }
 }
+
+const store = createStore(counter);
+
+const render = () => {
+  document.body.innerText = store.getState();
+}
+
+// Registers a callback that gets called whenever
+// an action gets dispatched
+store.subscribe(render);
+render();
+
+document.addEventListener('click', () => {
+  store.dispatch({ type: 'INCREMENT' })
+});
