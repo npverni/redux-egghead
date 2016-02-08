@@ -154,7 +154,14 @@ const render = () => {
   );
 };
 
-const store = createStore(todoApp);
+const store = createStore(
+  todoApp,
+  {}, // initial state
+  window.devToolsExtension ? window.devToolsExtension() : undefined
+);
+// if you don't want redux dev tools, just use this:
+// const store = createStore(todoApp);
+
 store.subscribe(render);
 render();
 
