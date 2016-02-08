@@ -58,9 +58,48 @@ const todoApp = combineReducers({
   visibilityFilter,//: visibilityFilter <-- don't need to specify if same name (thanks to es6 object literal shorthand notation)
 });
 
+const FilterLink = ({
+  filter,
+  children
+}) => {
+  return (
+    <a href='#'
+      onClick={e => {
+        e.preventDefault();
+        store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter
+        });
+      }}
+    >
+    {children}
+    </a>
+  );
+}
+
+const getVisibleTodos = (
+  todos,
+  filter
+) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_COMPLETED':
+      return todos.filter(t => t.completed);
+    case 'SHOW_ACTIVE':
+      return todos.filter(t => !t.completed);
+    default:
+      return todos;
+  }
+}
+
 let nextTodoId = 0;
 class TodoApp extends Component {
   render() {
+    const visibleTodos = getVisibleTodos(
+      this.props.todos,
+      this.props.visibilityFilter
+    );
     return(
       <div>
         <input ref={node => {
@@ -77,7 +116,7 @@ class TodoApp extends Component {
           Add Todo
         </button>
         <ul>
-          {this.props.todos.map(todo =>
+          {visibleTodos.map(todo =>
             <li key={todo.id}
               onClick={ () => {
                 store.dispatch({
@@ -91,6 +130,15 @@ class TodoApp extends Component {
             </li>
           )}
         </ul>
+        <p>
+          Show:
+          {' '}
+          <FilterLink filter='SHOW_ALL'>All</FilterLink>
+          {' '}
+          <FilterLink filter='SHOW_ACTIVE'>Active</FilterLink>
+          {' '}
+          <FilterLink filter='SHOW_COMPLETED'>Completed</FilterLink>
+        </p>
       </div>
     );
   }
@@ -98,7 +146,9 @@ class TodoApp extends Component {
 
 const render = () => {
   ReactDOM.render(
-    <TodoApp todos={store.getState().todos}/>,
+    <TodoApp
+      {...store.getState()}
+    />,
     document.getElementById('root')
   );
 };
