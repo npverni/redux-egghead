@@ -42,3 +42,5 @@ const testAddTodo = () => {
 };
 
 testAddTodo();
+
+console.log("ALL TESTS PASS!");
