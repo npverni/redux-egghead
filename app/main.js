@@ -1,5 +1,6 @@
 import deepFreeze from 'deep-freeze';
 import expect from 'expect';
+import { createStore } from 'redux';
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -10,10 +11,10 @@ const todo = (state, action) => {
         completed:false
       };
     case 'TOGGLE_TODO': {
-      console.log(state);
       if (state.id !== action.id) {
         return state;
       };
+
       return {
         ...state,
         completed: !state.completed
@@ -37,6 +38,31 @@ const todos = (state = [], action) => {
       return state;
   }
 };
+
+const store = createStore(todos);
+console.log('INITIAL STATE:');
+console.log(store.getState());
+console.log('--------------');
+
+
+console.log('Dispatching ADD_TODO');
+store.dispatch({
+  type: 'ADD_TODO',
+  id: 0,
+  text: 'Learn Redux'
+});
+console.log('CURRENT STATE:');
+console.log(store.getState());
+console.log('--------------');
+
+console.log('Dispatching TOGGLE_TODO');
+store.dispatch({
+  type: 'TOGGLE_TODO',
+  id: 1
+});
+console.log('CURRENT STATE:');
+console.log(store.getState());
+console.log('--------------');
 
 const testAddTodo = () => {
   const stateBefore = [];
