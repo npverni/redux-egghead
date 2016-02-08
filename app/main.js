@@ -1,7 +1,7 @@
 import deepFreeze from 'deep-freeze';
 import expect from 'expect';
 import { createStore, combineReducers } from 'redux';
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 const todo = (state, action) => {
@@ -58,8 +58,44 @@ const todoApp = combineReducers({
   visibilityFilter,//: visibilityFilter <-- don't need to specify if same name (thanks to es6 object literal shorthand notation)
 });
 
-/*
+let nextTodoId = 0;
+class TodoApp extends Component {
+  render() {
+    return(
+      <div>
+        <button onClick={() => {
+          store.dispatch({
+            type: 'ADD_TODO',
+            text: 'TEST',
+            id: nextTodoId++
+          });
+        }}>
+          Add Todo
+        </button>
+        <ul>
+          {this.props.todos.map(todo =>
+            <li key={todo.id}>
+              {todo.text}
+            </li>
+          )}
+        </ul>
+      </div>
+    );
+  }
+};
+
+const render = () => {
+  ReactDOM.render(
+    <TodoApp todos={store.getState().todos}/>,
+    document.getElementById('root')
+  );
+};
+
 const store = createStore(todoApp);
+store.subscribe(render);
+render();
+
+/*
 console.log('INITIAL STATE:');
 console.log(store.getState());
 console.log('--------------');
