@@ -55,7 +55,6 @@ const visibilityFilter = (
 const combineReducers = (reducers) => {
   // return functino is a reducer itself
   return(state = {}, action) => {
-    console.log('foo')
     return Object.keys(reducers).reduce(
       (nextState, key) => {
         nextState[key] = reducers[key](
