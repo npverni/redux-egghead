@@ -1,27 +1,44 @@
-import { createStore } from 'redux';
+import deepFreeze from 'deep-freeze';
+import expect from 'expect';
 
-const counter = (state = 0, action) => {
+const todos = (state = [], action) => {
   switch (action.type) {
-    case 'INCREMENT':
-      return state + 1;
-    case 'DECREMENT':
-      return state - 1;
+    case 'ADD_TODO':
+      return [
+        ...state,
+        {
+          id: action.id,
+          text: action.text,
+          completed: false
+        }
+      ]
     default:
       return state;
   }
-}
+};
 
-const store = createStore(counter);
+const testAddTodo = () => {
+  const stateBefore = [];
+  const action = {
+    type: 'ADD_TODO',
+    id: 0,
+    text: 'Learn Redux'
+  };
 
-const render = () => {
-  document.body.innerText = store.getState();
-}
+  const stateAfter = [
+    {
+      id: 0,
+      text: 'Learn Redux',
+      completed: false
+    }
+  ];
 
-// Registers a callback that gets called whenever
-// an action gets dispatched
-store.subscribe(render);
-render();
+  deepFreeze(stateBefore);
+  deepFreeze(action);
 
-document.addEventListener('click', () => {
-  store.dispatch({ type: 'INCREMENT' })
-});
+  expect(
+    todos(stateBefore, action)
+  ).toEqual(stateAfter);
+};
+
+testAddTodo();
