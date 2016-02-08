@@ -78,7 +78,15 @@ class TodoApp extends Component {
         </button>
         <ul>
           {this.props.todos.map(todo =>
-            <li key={todo.id}>
+            <li key={todo.id}
+              onClick={ () => {
+                store.dispatch({
+                  type: 'TOGGLE_TODO',
+                  id: todo.id
+                });
+              }}
+              style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+            >
               {todo.text}
             </li>
           )}
@@ -99,39 +107,6 @@ const store = createStore(todoApp);
 store.subscribe(render);
 render();
 
-/*
-console.log('INITIAL STATE:');
-console.log(store.getState());
-console.log('--------------');
-
-console.log('Dispatching ADD_TODO');
-store.dispatch({
-  type: 'ADD_TODO',
-  id: 0,
-  text: 'Learn Redux'
-});
-console.log('CURRENT STATE:');
-console.log(store.getState());
-console.log('--------------');
-
-console.log('Dispatching TOGGLE_TODO');
-store.dispatch({
-  type: 'TOGGLE_TODO',
-  id: 1
-});
-console.log('CURRENT STATE:');
-console.log(store.getState());
-console.log('--------------');
-
-console.log('Dispatching SET_VISIBILITY_FILTER');
-store.dispatch({
-  type: 'SET_VISIBILITY_FILTER',
-  filter: 'SHOW_COMPLETED'
-});
-console.log('CURRENT STATE:');
-console.log(store.getState());
-console.log('--------------');
-*/
 
 const testAddTodo = () => {
   const stateBefore = [];
