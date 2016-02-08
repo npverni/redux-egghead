@@ -1,6 +1,6 @@
 import deepFreeze from 'deep-freeze';
 import expect from 'expect';
-import { createStore/*, combineReducers */ } from 'redux';
+import { createStore, combineReducers } from 'redux';
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -51,38 +51,12 @@ const visibilityFilter = (
   }
 };
 
-// implement combineReducers from scratch
-const combineReducers = (reducers) => {
-  // return functino is a reducer itself
-  return(state = {}, action) => {
-    return Object.keys(reducers).reduce(
-      (nextState, key) => {
-        nextState[key] = reducers[key](
-          state[key],
-          action
-        );
-        return nextState;
-      },
-      {}
-    );
-  };
-};
-
 const todoApp = combineReducers({
   todos,//: todos,
   visibilityFilter,//: visibilityFilter <-- don't need to specify if same name (thanks to es6 object literal shorthand notation)
 });
 
-//SAME AS THIS:
 /*
-const todoApp = (state = {}, action) => {
-  return {
-    todos: todos(state.todos, action),
-    visibilityFilter: visibilityFilter(state.visibilityFilter, action)
-  };
-};
-*/
-
 const store = createStore(todoApp);
 console.log('INITIAL STATE:');
 console.log(store.getState());
@@ -115,6 +89,7 @@ store.dispatch({
 console.log('CURRENT STATE:');
 console.log(store.getState());
 console.log('--------------');
+*/
 
 const testAddTodo = () => {
   const stateBefore = [];
