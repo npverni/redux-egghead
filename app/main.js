@@ -164,7 +164,7 @@ const TodoList = ({
 
   Keeping together because they don't need to be seperated
 */
-const AddTodo = (props, { store }) => {
+let AddTodo = ({ dispatch }) => {
   let input;
 
   return(
@@ -173,7 +173,7 @@ const AddTodo = (props, { store }) => {
           input = node
       }} />
       <button onClick={() => {
-        store.dispatch({
+        dispatch({
           type: 'ADD_TODO',
           id: nextTodoId++,
           text: input.value
@@ -185,9 +185,24 @@ const AddTodo = (props, { store }) => {
     </div>
   );
 }
-AddTodo.contextTypes = {
-  store: React.PropTypes.object
-}
+AddTodo = connect(
+  /*
+  This is what it looks like with default param
+
+    state => {
+      return {};
+    },
+    dispatch => {
+      return { dispatch };
+    }
+
+  Which could just be this
+    null, // don't need to actually subscribe to store
+    null // <-- get dispatch for free
+
+  Therefore, if both null we can just leave empty
+  */
+)(AddTodo);
 
 const getVisibleTodos = (
   todos,
@@ -207,7 +222,7 @@ const getVisibleTodos = (
 
 // Maps the redux store state to the
 // Props of the TodoList component
-const mapStateToProps = (state) => {
+const mapStateToTodoListProps = (state) => {
   return {
     todos: getVisibleTodos(state.todos, state.visibilityFilter)
   };
@@ -215,7 +230,7 @@ const mapStateToProps = (state) => {
 
 // Maps the dispatch method of the store
 // to the callback props of the TodoList component
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToTodoListProps = (dispatch) => {
   return {
     onTodoClick: (id) => {
       dispatch({
@@ -227,8 +242,8 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const VisibleTodoList = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToTodoListProps,
+  mapDispatchToTodoListProps
 )(TodoList)
 
 let nextTodoId = 0;
