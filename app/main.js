@@ -58,7 +58,7 @@ const todoApp = combineReducers({
   visibilityFilter,//: visibilityFilter <-- don't need to specify if same name (thanks to es6 object literal shorthand notation)
 });
 
-
+/* Presentation Component */
 class FilterLink extends Component {
   componentDidMount() {
     this.unsubscribe = store.subscribe(() =>
@@ -90,6 +90,7 @@ class FilterLink extends Component {
   }
 }
 
+/* Presentation Component */
 const Link = ({
   active,
   children,
@@ -108,6 +109,7 @@ const Link = ({
   );
 }
 
+/* Presentation Component */
 const Footer = () => (
   <p>
     Show:
@@ -133,6 +135,7 @@ const Todo = ({
   </li>
 );
 
+/* Presentation Component */
 const TodoList = ({
   todos,
   onTodoClick
@@ -148,6 +151,13 @@ const TodoList = ({
   </ul>
 );
 
+/*
+  Not presentation nor container, doesn't fit either
+   - input adn button are presentational
+   - dispatching action is container
+
+  Keeping together because they don't need to be seperated
+*/
 const AddTodo = ({
   onAddClick
 }) => {
@@ -159,7 +169,11 @@ const AddTodo = ({
           input = node
       }} />
       <button onClick={() => {
-        onAddClick(input.value);
+        store.dispatch({
+          type: 'ADD_TODO',
+          id: nextTodoId++,
+          text: input.value
+        })
         input.value = '';
       }}>
         Add Todo
@@ -184,6 +198,7 @@ const getVisibleTodos = (
   }
 }
 
+/* Container component */
 class VisibleTodoList extends Component {
   componentDidMount() {
     this.unsubscribe = store.subscribe(() =>
@@ -211,114 +226,25 @@ class VisibleTodoList extends Component {
   }
 }
 
-
 let nextTodoId = 0;
 
-const TodoApp = ({
-  todos,
-  visibilityFilter
-}) => (
+const TodoApp = () => (
   <div>
-    <AddTodo
-      onAddClick={text =>
-        store.dispatch({
-          type: 'ADD_TODO',
-          id: nextTodoId++,
-          text
-        })
-      }
-    />
+    <AddTodo />
     <VisibleTodoList />
     <Footer />
   </div>
 );
 
-const render = () => {
-  ReactDOM.render(
-    <TodoApp
-      {...store.getState()}
-    />,
-    document.getElementById('root')
-  );
-};
-
+// if you don't want redux dev tools, just use this:
+// const store = createStore(todoApp);
 const store = createStore(
   todoApp,
   {}, // initial state
   window.devToolsExtension ? window.devToolsExtension() : undefined
 );
-// if you don't want redux dev tools, just use this:
-// const store = createStore(todoApp);
 
-store.subscribe(render);
-render();
-
-
-const testAddTodo = () => {
-  const stateBefore = [];
-  const action = {
-    type: 'ADD_TODO',
-    id: 0,
-    text: 'Learn Redux'
-  };
-
-  const stateAfter = [
-    {
-      id: 0,
-      text: 'Learn Redux',
-      completed: false
-    }
-  ];
-
-  deepFreeze(stateBefore);
-  deepFreeze(action);
-
-  expect(
-    todos(stateBefore, action)
-  ).toEqual(stateAfter);
-};
-
-const testToggleTodo = () => {
-  const stateBefore = [
-    {
-      id: 0,
-      text: 'Learn Redux',
-      completed: false
-    },
-    {
-      id: 1,
-      text: 'Go Shopping',
-      completed: false
-    }
-  ];
-
-  const action = {
-    type: 'TOGGLE_TODO',
-    id: 1,
-  };
-
-  const stateAfter= [
-    {
-      id: 0,
-      text: 'Learn Redux',
-      completed: false
-    },
-    {
-      id: 1,
-      text: 'Go Shopping',
-      completed: true
-    }
-  ];
-
-  deepFreeze(stateBefore);
-  deepFreeze(action);
-
-  expect(
-    todos(stateBefore, action)
-  ).toEqual(stateAfter);
-};
-
-testAddTodo();
-testToggleTodo();
-
-console.log("😄😄😄 ALL TESTS PASS 😄😄😄");
+ReactDOM.render(
+  <TodoApp />,
+  document.getElementById('root')
+);
