@@ -54,6 +54,22 @@ const visibilityFilter = (
   }
 };
 
+let nextTodoId = 0;
+const addTodo = (text) => {
+  return {
+    type: 'ADD_TODO',
+    id: nextTodoId++,
+    text: text
+  };
+}
+
+const setVisibilityFilter = (filter) => {
+  return {
+    type: 'SET_VISIBILITY_FILTER',
+    filter: filter
+  };
+}
+
 const todoApp = combineReducers({
   todos,//: todos,
   visibilityFilter,//: visibilityFilter <-- don't need to specify if same name (thanks to es6 object literal shorthand notation)
@@ -94,10 +110,7 @@ const mapDispatchToLinkProps = (
 ) => {
   return {
     onClick: () => {
-      dispatch({
-        type: 'SET_VISIBILITY_FILTER',
-        filter: ownProps.filter
-      })
+      dispatch(setVisibilityFilter(ownProps.filter))
     }
   };
 };
@@ -149,7 +162,6 @@ const TodoList = ({
   </ul>
 );
 
-let nextTodoId = 0;
 /*
   Not presentation nor container, doesn't fit either
    - input adn button are presentational
@@ -159,13 +171,6 @@ let nextTodoId = 0;
 */
 
 
-const addTodo = (text) => {
-  return {
-    type: 'ADD_TODO',
-    id: nextTodoId++,
-    text: text
-  };
-}
 let AddTodo = ({ dispatch }) => {
   let input;
 
