@@ -3,7 +3,7 @@ import expect from 'expect';
 import { createStore, combineReducers } from 'redux';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -205,38 +205,31 @@ const getVisibleTodos = (
   }
 }
 
-/* Container component */
-class VisibleTodoList extends Component {
-  componentDidMount() {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() =>
-      this.forceUpdate()
-    );
-  }
+// Maps the redux store state to the
+// Props of the TodoList component
+const mapStateToProps = (state) => {
+  return {
+    todos: getVisibleTodos(state.todos, state.visibilityFilter)
+  };
+};
 
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-
-  render () {
-    const { store } = this.context;
-    const state = store.getState();
-    return (
-      <TodoList
-        todos = {getVisibleTodos(state.todos, state.visibilityFilter)}
-        onTodoClick={id =>
-          store.dispatch({
-            type: 'TOGGLE_TODO',
-            id
-          })
-        }
-      />
-    );
+// Maps the dispatch method of the store
+// to the callback props of the TodoList component
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTodoClick: (id) => {
+      dispatch({
+        type: 'TOGGLE_TODO',
+        id
+      })
+    }
   }
 }
-VisibleTodoList.contextTypes = {
-  store: React.PropTypes.object
-};
+
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList)
 
 let nextTodoId = 0;
 
