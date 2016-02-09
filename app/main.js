@@ -61,6 +61,7 @@ const todoApp = combineReducers({
 /* Presentation Component */
 class FilterLink extends Component {
   componentDidMount() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
@@ -72,6 +73,7 @@ class FilterLink extends Component {
 
   render () {
     const props = this.props;
+    const { store } = props;
     const state = store.getState();
 
     return (
@@ -110,15 +112,15 @@ const Link = ({
 }
 
 /* Presentation Component */
-const Footer = () => (
+const Footer = ({ store }) => (
   <p>
     Show:
     {' '}
-    <FilterLink filter='SHOW_ALL'>All</FilterLink>
+    <FilterLink filter='SHOW_ALL' store={store}>All</FilterLink>
     {' '}
-    <FilterLink filter='SHOW_ACTIVE'>Active</FilterLink>
+    <FilterLink filter='SHOW_ACTIVE' store={store}>Active</FilterLink>
     {' '}
-    <FilterLink filter='SHOW_COMPLETED'>Completed</FilterLink>
+    <FilterLink filter='SHOW_COMPLETED' store={store}>Completed</FilterLink>
   </p>
 );
 
@@ -158,9 +160,7 @@ const TodoList = ({
 
   Keeping together because they don't need to be seperated
 */
-const AddTodo = ({
-  onAddClick
-}) => {
+const AddTodo = ({ store }) => {
   let input;
 
   return(
@@ -201,6 +201,7 @@ const getVisibleTodos = (
 /* Container component */
 class VisibleTodoList extends Component {
   componentDidMount() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
     );
@@ -211,6 +212,7 @@ class VisibleTodoList extends Component {
   }
 
   render () {
+    const { store } = this.props;
     const state = store.getState();
     return (
       <TodoList
@@ -228,23 +230,23 @@ class VisibleTodoList extends Component {
 
 let nextTodoId = 0;
 
-const TodoApp = () => (
+const TodoApp = ({ store }) => (
   <div>
-    <AddTodo />
-    <VisibleTodoList />
-    <Footer />
+    <AddTodo store={store} />
+    <VisibleTodoList store={store} />
+    <Footer store={store} />
   </div>
 );
 
 // if you don't want redux dev tools, just use this:
 // const store = createStore(todoApp);
-const store = createStore(
+const finalStore = createStore(
   todoApp,
   {}, // initial state
   window.devToolsExtension ? window.devToolsExtension() : undefined
 );
 
 ReactDOM.render(
-  <TodoApp />,
+  <TodoApp store={finalStore} />,
   document.getElementById('root')
 );
