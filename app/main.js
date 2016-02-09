@@ -58,18 +58,39 @@ const todoApp = combineReducers({
   visibilityFilter,//: visibilityFilter <-- don't need to specify if same name (thanks to es6 object literal shorthand notation)
 });
 
-const FilterLink = ({
-  filter,
-  currentFilter,
+
+class FilterLink extends Component {
+  render () {
+    const props = this.props;
+    const state = store.getState();
+
+    return (
+      <Link
+        active={state.visibilityFilter === props.filter}
+        onClick={() =>
+          store.dispatch({
+            type: 'SET_VISIBILITY_FILTER',
+            filter: props.filter
+          })
+        }
+      >
+        {props.children}
+      </Link>
+    );
+  }
+}
+
+const Link = ({
+  active,
   children,
   onClick
 }) => {
-  if (currentFilter === filter) { return <span>{children}</span>}
+  if (active) { return <span>{children}</span>}
   return (
     <a href='#'
       onClick={e => {
         e.preventDefault();
-        onClick(filter);
+        onClick();
       }}
     >
     {children}
@@ -77,22 +98,17 @@ const FilterLink = ({
   );
 }
 
-const Footer = ({
-  visibilityFilter,
-  onFilterClick
-}) => {
-  return (
-    <p>
-      Show:
-      {' '}
-      <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter} onClick={onFilterClick}>All</FilterLink>
-      {' '}
-      <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter} onClick={onFilterClick}>Active</FilterLink>
-      {' '}
-      <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter} onClick={onFilterClick}>Completed</FilterLink>
-    </p>
-  );
-};
+const Footer = () => (
+  <p>
+    Show:
+    {' '}
+    <FilterLink filter='SHOW_ALL'>All</FilterLink>
+    {' '}
+    <FilterLink filter='SHOW_ACTIVE'>Active</FilterLink>
+    {' '}
+    <FilterLink filter='SHOW_COMPLETED'>Completed</FilterLink>
+  </p>
+);
 
 const Todo = ({
   onClick,
@@ -182,15 +198,7 @@ const TodoApp = ({
           id: id
         })
       } />
-    <Footer
-      visibilityFilter={visibilityFilter}
-      onFilterClick={filter =>
-        store.dispatch({
-          type: 'SET_VISIBILITY_FILTER',
-          filter
-        })
-      }
-    />
+    <Footer />
   </div>
 );
 
