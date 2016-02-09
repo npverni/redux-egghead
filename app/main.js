@@ -98,34 +98,29 @@ const Todo = ({
   onClick,
   completed,
   text
-}) => {
-  return (
-    <li
-      onClick={onClick}
-      style={{ textDecoration: completed ? 'line-through' : 'none' }}
-    >
-      {text}
-    </li>
-  );
-};
-
+}) => (
+  <li
+    onClick={onClick}
+    style={{ textDecoration: completed ? 'line-through' : 'none' }}
+  >
+    {text}
+  </li>
+);
 
 const TodoList = ({
   todos,
   onTodoClick
-}) => {
-  return (
-    <ul>
-      {todos.map(todo =>
-        <Todo
-          key={todo.id}
-          {...todo}
-          onClick={() => onTodoClick(todo.id)}
-        />
-      )}
-    </ul>
-  );
-};
+}) => (
+  <ul>
+    {todos.map(todo =>
+      <Todo
+        key={todo.id}
+        {...todo}
+        onClick={() => onTodoClick(todo.id)}
+      />
+    )}
+  </ul>
+);
 
 const AddTodo = ({
   onAddClick
@@ -168,40 +163,36 @@ let nextTodoId = 0;
 const TodoApp = ({
   todos,
   visibilityFilter
-}) => {
-  const visibleTodos = getVisibleTodos(todos, visibilityFilter);
-
-  return(
-    <div>
-      <AddTodo
-        onAddClick={text =>
-          store.dispatch({
-            type: 'ADD_TODO',
-            id: nextTodoId++,
-            text
-          })
-        }
-      />
-      <TodoList
-        todos={visibleTodos}
-        onTodoClick={id =>
-          store.dispatch({
-            type: 'TOGGLE_TODO',
-            id: id
-          })
-        } />
-      <Footer
-        visibilityFilter={visibilityFilter}
-        onFilterClick={filter =>
-          store.dispatch({
-            type: 'SET_VISIBILITY_FILTER',
-            filter
-          })
-        }
-      />
-    </div>
-  );
-};
+}) => (
+  <div>
+    <AddTodo
+      onAddClick={text =>
+        store.dispatch({
+          type: 'ADD_TODO',
+          id: nextTodoId++,
+          text
+        })
+      }
+    />
+    <TodoList
+      todos={ getVisibleTodos(todos, visibilityFilter) }
+      onTodoClick={id =>
+        store.dispatch({
+          type: 'TOGGLE_TODO',
+          id: id
+        })
+      } />
+    <Footer
+      visibilityFilter={visibilityFilter}
+      onFilterClick={filter =>
+        store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter
+        })
+      }
+    />
+  </div>
+);
 
 const render = () => {
   ReactDOM.render(
