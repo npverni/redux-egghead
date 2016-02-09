@@ -149,6 +149,7 @@ const TodoList = ({
   </ul>
 );
 
+let nextTodoId = 0;
 /*
   Not presentation nor container, doesn't fit either
    - input adn button are presentational
@@ -156,6 +157,15 @@ const TodoList = ({
 
   Keeping together because they don't need to be seperated
 */
+
+
+const addTodo = (text) => {
+  return {
+    type: 'ADD_TODO',
+    id: nextTodoId++,
+    text: text
+  };
+}
 let AddTodo = ({ dispatch }) => {
   let input;
 
@@ -165,11 +175,7 @@ let AddTodo = ({ dispatch }) => {
           input = node
       }} />
       <button onClick={() => {
-        dispatch({
-          type: 'ADD_TODO',
-          id: nextTodoId++,
-          text: input.value
-        })
+        dispatch(addTodo(input.value));
         input.value = '';
       }}>
         Add Todo
@@ -237,8 +243,6 @@ const VisibleTodoList = connect(
   mapStateToTodoListProps,
   mapDispatchToTodoListProps
 )(TodoList)
-
-let nextTodoId = 0;
 
 const TodoApp = () => (
   <div>
