@@ -59,14 +59,21 @@ const addTodo = (text) => {
   return {
     type: 'ADD_TODO',
     id: nextTodoId++,
-    text: text
+    text
   };
 }
 
 const setVisibilityFilter = (filter) => {
   return {
     type: 'SET_VISIBILITY_FILTER',
-    filter: filter
+    filter
+  };
+}
+
+const toggleTodo = (id) => {
+  return {
+    type: 'TOGGLE_TODO',
+    id
   };
 }
 
@@ -236,10 +243,7 @@ const mapStateToTodoListProps = (state) => {
 const mapDispatchToTodoListProps = (dispatch) => {
   return {
     onTodoClick: (id) => {
-      dispatch({
-        type: 'TOGGLE_TODO',
-        id
-      })
+      dispatch(toggleTodo(id))
     }
   }
 }
